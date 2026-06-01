@@ -1,0 +1,154 @@
+# Maha Tribal Intelligence Grid
+
+**AI-enabled Tribal Welfare Assurance, Vulnerability Intelligence & Human Development Governance Layer for Maharashtra.**
+
+A full-stack, government-grade command dashboard (PoC) for the Tribal Development Department, Government of Maharashtra — built for the CM Office, Chief Secretary, Principal Secretary, District Collectors and MahaIT.
+
+> ⚠️ **All data in this build is "Simulated for PoC"** — generated from a deterministic, seeded model around real Maharashtra tribal districts, divisions, schemes and PVTGs. No real beneficiary data is used.
+>
+> 🧭 **Responsible AI:** AI outputs are decision-support indicators only. Final action remains with authorized government officials through human-in-the-loop review.
+
+---
+
+## Tech stack
+
+| Layer    | Technology |
+|----------|-----------|
+| Frontend | React 18 + Vite + Tailwind CSS |
+| Charts   | Recharts |
+| Maps     | Leaflet + React-Leaflet (Mapbox-compatible tiles) |
+| Icons    | Lucide React |
+| Backend  | Node.js + Express |
+| Theme    | Clean premium **white** government command-center theme |
+
+---
+
+## Project structure
+
+```
+tribal intell poc/
+├── package.json              # root convenience scripts (run both apps)
+├── README.md
+├── backend/
+│   ├── package.json
+│   ├── server.js             # Express app + all API routes
+│   └── data/
+│       ├── seed.js           # deterministic master data (districts, blocks, villages, schemes)
+│       └── builders.js       # per-endpoint payload builders
+└── frontend/
+    ├── package.json
+    ├── vite.config.js        # dev server + /api proxy → :5050
+    ├── tailwind.config.js    # government palette (saffron, deep blue, emerald, slate)
+    ├── index.html
+    └── src/
+        ├── main.jsx, App.jsx, nav.js
+        ├── api/client.js          # fetch wrapper
+        ├── context/FilterContext.jsx   # global working filters
+        ├── hooks/useApi.js
+        ├── lib/format.js          # ₹ / Indian-locale formatting, risk colors
+        ├── components/
+        │   ├── layout/ (Sidebar, Header, Layout)
+        │   ├── charts/Charts.jsx  # reusable Recharts wrappers
+        │   ├── ui/ (Card, KpiCard, DataTable, Modal, Select, Badge, AlertBanner, States)
+        │   ├── MahaMap.jsx        # Leaflet risk heatmap
+        │   ├── FilterBar.jsx, KpiRow.jsx, PageHeader.jsx, ComplianceNote.jsx
+        └── pages/                 # the 10 dashboards
+```
+
+---
+
+## Quick start
+
+You need **Node.js 18+**. Open two terminals (or use the root combined script).
+
+### 1. Backend (port 5050)
+
+```bash
+cd backend
+npm install
+npm start
+# → http://localhost:5050   (Simulated for PoC)
+```
+
+### 2. Frontend (port 3000)
+
+```bash
+cd frontend
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+The Vite dev server proxies all `/api/*` calls to the backend on `:5050`, so just open **http://localhost:3000**.
+
+### One-command option (from the project root)
+
+```bash
+npm install            # installs 'concurrently'
+npm run install:all    # installs backend + frontend deps
+npm run dev            # runs API + web together
+```
+
+> **Why port 5050?** macOS reserves port 5000 for the AirPlay Receiver. Override with `PORT=xxxx npm start` if needed (also update `frontend/vite.config.js` proxy target).
+
+### Production build
+
+```bash
+cd frontend && npm run build && npm run preview
+```
+
+---
+
+## API endpoints
+
+Base URL: `http://localhost:5050`
+
+| Method & Path | Description |
+|---------------|-------------|
+| `GET /api/overview` | Executive command KPIs, ranking, heatmap, alerts, trends |
+| `GET /api/districts` | District list (filterable) |
+| `GET /api/district/:id` | District drill-down (blocks, villages, interventions) |
+| `GET /api/welfare` | Benefit funnel, MahaDBT linkage, scheme coverage, bottlenecks |
+| `GET /api/education` | Scholarships, hostels, dropout prediction, gender continuation |
+| `GET /api/health` | Malnutrition, maternal/child risk, disease trends, health workers |
+| `GET /api/migration` | Migration corridors, MGNREGA, SHG, livelihood stress |
+| `GET /api/fra` | Forest Rights Act claim pipeline, backlog, geo status |
+| `GET /api/grievances` | Grievances by category, sentiment, resolution, heatmap |
+| `GET /api/compliance` | Human-in-the-loop, DPDP, RBAC, bias, audit logs, CERT-In |
+| `GET /api/reports` | CM/Collector/PS briefs, top-10 priorities, escalation matrix |
+| `GET /api/filters` | Master options for all filters |
+| `GET /api/meta` | Platform metadata & coverage counts |
+
+**Filter query params** (honoured server-side where applicable): `district`, `division`, `department`, `scheme`, `risk`, `status`, `from`, `to`.
+Example: `GET /api/overview?division=Nashik&risk=Critical`
+
+---
+
+## Modules (pages)
+
+1. **Executive Command** — CM / Chief Secretary state view: 12 KPIs, Maharashtra tribal-risk heatmap, district ranking, urgent governance alerts, drill-down modal.
+2. **District Intelligence** — Collector view: district/block/village selectors, household vulnerability, GIS village clusters, intervention priority list, block comparison.
+3. **Welfare Assurance** — Eligible→Applied→Approved→Received funnel, MahaDBT/Aadhaar linkage, rejection reasons, department bottlenecks, 25-scheme coverage.
+4. **Education & Hostels** — Scholarships, hostel occupancy/utilization, dropout-risk prediction, gender continuation, hostel performance table.
+5. **Nutrition & Health** — Maternal/child malnutrition, anemia, immunization, seasonal disease trends, intervention map, health-worker tracking.
+6. **Migration & Livelihood** — Seasonal migration heatmap, source villages, destination corridors, MGNREGA/SHG/Van Dhan, livelihood-stress table.
+7. **Land & Forest Rights (FRA)** — Claim pipeline, approval delay, geo-tagged status, village backlog, district performance.
+8. **Grievance & Citizen Trust** — Category split, sentiment analysis, resolution performance, district heatmap, recurring complaints.
+9. **Responsible AI & Compliance** — Human-in-the-loop, model confidence gauge, explainability, bias monitoring, DPDP checklist, RBAC, CERT-In incident panel, audit logs.
+10. **Reports & Decision Briefs** — Auto-generated CM/Collector/PS briefs, monthly summary, top-10 priorities, risk escalation matrix, **PDF (print) & CSV export**.
+
+---
+
+## Design & compliance notes
+
+- **White theme only.** Accents: saffron, deep blue, emerald, slate — used with restraint.
+- **Fully responsive** — mobile hamburger drawer, sticky filter bars, responsive grids, zero overlap on mobile / tablet / desktop.
+- **₹ (Indian Rupee)** used for every financial value; Indian-locale number grouping and Cr/Lakh compaction. No `$` anywhere.
+- **No empty states** — every section is populated with realistic simulated data.
+- **Working filters** — district, division, department, scheme, gender, age group, tribal group, vulnerability category, date range, risk level, status — plus global search, district selector, sortable/searchable tables, and a drill-down modal.
+- **PDF export** uses the browser print-to-PDF with a dedicated print stylesheet; **CSV export** downloads real files client-side.
+
+### Sample data coverage
+12 districts · 40 blocks · 150 villages · 25 schemes · 10,000+ simulated beneficiary records (summarized via API) · ₹ crore-level expenditure · district risk scores · village vulnerability scores.
+
+**Districts:** Nandurbar, Gadchiroli, Palghar, Nashik, Dhule, Chandrapur, Yavatmal, Amravati, Thane, Raigad, Ahmednagar, Pune (Tribal Belt).

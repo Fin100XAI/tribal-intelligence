@@ -1,0 +1,25 @@
+{
+  "name": "maha-tribal-intelligence-grid-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Maha Tribal Intelligence Grid - Government-grade tribal governance intelligence platform",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "tribal",
+    "governance",
+    "maharashtra",
+    "welfare",
+    "intelligence"
+  ],
+  "author": "MahaIT / Tribal Development Department",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  }
+}
