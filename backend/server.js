@@ -7,6 +7,9 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { DATA } from './data/seed.js';
 import {
@@ -88,6 +91,20 @@ app.get('/api/fra', (req, res) => okScaled(res, req, buildFra(req.query)));
 app.get('/api/grievances', (req, res) => okScaled(res, req, buildGrievances(req.query)));
 app.get('/api/compliance', (_req, res) => ok(res, buildCompliance()));
 app.get('/api/reports', (req, res) => okScaled(res, req, buildReports(req.query)));
+
+// --- Serve the built frontend (production) ----------------------------------
+// When `frontend/dist` exists (after `npm run build`), the Express server also
+// serves the compiled React app, so the whole platform runs on one port.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = path.resolve(__dirname, '../frontend/dist');
+if (fs.existsSync(path.join(distDir, 'index.html'))) {
+  app.use(express.static(distDir));
+  // SPA fallback: any non-API GET returns index.html for client-side routing.
+  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(distDir, 'index.html')));
+  console.log('  → Serving built frontend from frontend/dist');
+} else {
+  console.log('  → frontend/dist not found — run `npm run build` in /frontend to serve the app from here');
+}
 
 // --- 404 + error handler ----------------------------------------------------
 app.use((req, res) => res.status(404).json({ success: false, error: `Not found: ${req.path}` }));
