@@ -2,15 +2,11 @@
   "name": "maha-tribal-intelligence-grid",
   "version": "1.0.0",
   "private": true,
-  "description": "Maha Tribal Intelligence Grid — AI-enabled Tribal Welfare Assurance, Vulnerability Intelligence & Human Development Governance Layer for Maharashtra (PoC).",
+  "description": "Maha Tribal Intelligence Grid — frontend-only, fully offline government-grade dashboard (no backend, no API). All data is generated in-browser and Simulated for PoC.",
   "scripts": {
-    "install:all": "npm --prefix backend install && npm --prefix frontend install",
-    "backend": "npm --prefix backend start",
-    "frontend": "npm --prefix frontend run dev",
+    "install:all": "npm --prefix frontend install",
+    "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
-    "dev": "concurrently -n API,WEB -c blue,green \"npm:backend\" \"npm:frontend\""
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+    "preview": "npm --prefix frontend run preview"
   }
 }

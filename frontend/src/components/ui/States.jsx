@@ -29,7 +29,7 @@ export function ErrorState({ error, onRetry }) {
       </div>
       <h3 className="mt-3 font-semibold text-ink-800">Unable to load data</h3>
       <p className="mt-1 text-sm text-ink-400">
-        {String(error?.message || error || 'Network error')}. Ensure the backend API is running on port 5050.
+        {String(error?.message || error || 'Something went wrong')}. Please refresh the dashboard.
       </p>
       {onRetry && (
         <button onClick={onRetry} className="mt-4 rounded-lg bg-govblue-700 px-4 py-2 text-sm font-medium text-white hover:bg-govblue-800">

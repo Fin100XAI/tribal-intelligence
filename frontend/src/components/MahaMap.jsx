@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, CircleMarker, Tooltip as LTooltip, useMap } from 'react-leaflet';
+import { MapContainer, CircleMarker, Tooltip as LTooltip, useMap } from 'react-leaflet';
 import { useEffect } from 'react';
 import { riskColor } from '../lib/format.js';
 
@@ -30,12 +30,9 @@ function radiusFor(score) {
 // points: [{ id, name, lat, lng, score, band, district, ...extra }]
 export default function MahaMap({ points = [], height = 420, valueLabel = 'Risk Score', onSelect, renderTooltip }) {
   return (
-    <div className="rounded-2xl overflow-hidden border border-ink-100" style={{ height }}>
-      <MapContainer center={MH_CENTER} zoom={6} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
-        <TileLayer
-          attribution='&copy; OpenStreetMap'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        />
+    <div className="maha-map rounded-2xl overflow-hidden border border-ink-100" style={{ height }}>
+      {/* No external tile server — fully self-contained styled backdrop. */}
+      <MapContainer center={MH_CENTER} zoom={6} scrollWheelZoom={false} attributionControl={false} style={{ height: '100%', width: '100%' }}>
         <FitBounds points={points} />
         {points.map((p) => {
           const c = riskColor(p.band);
