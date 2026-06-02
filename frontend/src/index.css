@@ -45,20 +45,32 @@ body {
   background: #eef2f7;
 }
 
-/* Self-contained map backdrop (no external tiles): soft gradient + subtle grid */
+/* Self-contained map backdrop (no external tiles): soft "surrounding area" wash
+   behind the embedded Maharashtra silhouette polygon. */
 .maha-map .leaflet-container {
-  background-color: #f1f6fb;
+  background-color: #eef3f8;
   background-image:
-    radial-gradient(circle at 30% 25%, rgba(37, 99, 235, 0.06), transparent 45%),
-    radial-gradient(circle at 70% 75%, rgba(234, 88, 12, 0.05), transparent 45%),
-    linear-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.14) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+    radial-gradient(circle at 28% 22%, rgba(37, 99, 235, 0.05), transparent 42%),
+    radial-gradient(circle at 72% 78%, rgba(234, 88, 12, 0.04), transparent 42%);
+}
+.maha-map .leaflet-interactive {
+  transition: fill-opacity 0.15s ease;
+}
+.maha-map .leaflet-interactive:hover {
+  fill-opacity: 0.95;
 }
 .leaflet-pane,
 .leaflet-top,
 .leaflet-bottom {
   z-index: 1 !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @layer components {

@@ -5,8 +5,8 @@ import { NAV } from '../../nav.js';
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="grid place-items-center h-9 w-9 rounded-xl bg-govblue-900 shrink-0">
-        <ShieldCheck size={20} className="text-saffron-400" />
+      <div className="grid place-items-center h-9 w-9 rounded-xl bg-govblue-200 shrink-0">
+        <ShieldCheck size={20} className="text-govblue-700" />
       </div>
       <div className="min-w-0">
         <p className="text-[13px] font-bold text-ink-800 leading-tight truncate">Maha Tribal</p>

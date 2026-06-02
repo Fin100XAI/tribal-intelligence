@@ -15,12 +15,41 @@ import {
 // Small artificial latency so loading states render smoothly (feels live).
 const settle = (value) => new Promise((resolve) => setTimeout(() => resolve(value), 140));
 
-// Apply the active non-geographic filters to a payload's KPI values, mirroring
-// what the server used to do, so every filter visibly changes the dashboard.
+// Count-type fields that get scaled uniformly by the filter factor so that
+// charts AND tables (not just KPI cards) respond to every filter. Percentages,
+// scores, indices, coordinates, days and identifiers are deliberately excluded
+// so ratios stay correct. A single uniform factor preserves relationships
+// (e.g. approved < applied still holds).
+const COUNT_KEYS = new Set([
+  'target', 'covered', 'pending', 'count', 'beneficiaries', 'enrolled', 'occupancy',
+  'households', 'population', 'volume', 'received', 'approved', 'rejected', 'sam', 'mam',
+  'visitsPlanned', 'visitsDone', 'asha', 'anm', 'grievances', 'escalated', 'predictedDropouts',
+  'migratingHouseholds', 'shgGroups', 'vandhanKendras', 'disputes', 'backlog', 'cfr',
+  'scholarshipApproved', 'scholarshipPending', 'expenditureCr', 'predicted',
+]);
+
+function scaleCounts(node, f) {
+  if (Array.isArray(node)) return node.map((n) => scaleCounts(n, f));
+  if (node && typeof node === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(node)) {
+      if (typeof v === 'number' && COUNT_KEYS.has(k)) out[k] = k === 'expenditureCr' ? Math.round(v * f * 10) / 10 : Math.max(1, Math.round(v * f));
+      else out[k] = scaleCounts(v, f);
+    }
+    return out;
+  }
+  return node;
+}
+
+// Apply the active non-geographic filters to a payload, so every filter visibly
+// changes the dashboard (KPI cards + count-based charts and tables).
 function scaled(payload, params = {}) {
   const f = filterScale(params);
-  if (payload && payload.kpis) return { ...payload, dataMode: 'Simulated for PoC', kpis: scaleKpis(payload.kpis, f), filterFactor: f };
-  return { ...payload, dataMode: 'Simulated for PoC' };
+  if (!payload) return { dataMode: 'Simulated for PoC' };
+  if (f === 1) return { ...payload, dataMode: 'Simulated for PoC', filterFactor: 1 };
+  const scaledPayload = scaleCounts(payload, f);
+  if (scaledPayload.kpis) scaledPayload.kpis = scaleKpis(payload.kpis, f); // KPIs scale by format, not key
+  return { ...scaledPayload, dataMode: 'Simulated for PoC', filterFactor: f };
 }
 
 const filterOptions = {
