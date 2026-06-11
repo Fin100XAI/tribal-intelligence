@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { X, ShieldCheck } from 'lucide-react';
 import { NAV } from '../../nav.js';
+import tribalLogo from '../../triballogo.jpeg';
 
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="grid place-items-center h-9 w-9 rounded-xl bg-govblue-200 shrink-0">
-        <ShieldCheck size={20} className="text-govblue-700" />
+      <div className="grid place-items-center h-10 w-10 rounded-xl bg-white ring-1 ring-ink-200 shrink-0 overflow-hidden p-0.5">
+        <img src={tribalLogo} alt="Tribal Development Department, Maharashtra" className="h-full w-full object-contain" />
       </div>
       <div className="min-w-0">
         <p className="text-[13px] font-bold text-ink-800 leading-tight truncate">Maha Tribal</p>
